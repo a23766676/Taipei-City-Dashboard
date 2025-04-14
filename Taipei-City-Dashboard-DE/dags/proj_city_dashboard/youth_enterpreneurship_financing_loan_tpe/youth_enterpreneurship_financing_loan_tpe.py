@@ -52,7 +52,8 @@ def _transfer(**kwargs):
     }
     data = data.rename(columns=col_map)
     data['period'] = data['period'].apply(convert_roc_date)
-
+    data['total_approved_amount_ten_thousand_ntd'] = data['total_approved_amount_ten_thousand_ntd'] * 10
+    data = data.rename(columns={"total_approved_amount_ten_thousand_ntd": "total_approved_amount_thousand_ntd"})
     # Time
     # standardize time
     data = data.drop(columns=['_id','_importdate'])
