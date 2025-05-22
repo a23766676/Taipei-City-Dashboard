@@ -1,0 +1,21 @@
+{
+	"name": "Go Dev Container",
+	"build": {
+	  "dockerfile": "Dockerfile.dev",
+	  "context": ".."
+	},
+	"settings": {
+	  "go.toolsManagement.autoUpdate": true,
+	  "go.useLanguageServer": true
+	},
+	"extensions": [
+	  "golang.Go"
+	],
+	"forwardPorts": [8088 , 40000],
+	"postCreateCommand": "cd Taipei-City-Dashboard-BE && go mod tidy",
+	"remoteUser": "root",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+	"workspaceFolder": "/workspaces/Taipei-City-Dashboard",
+	"runArgs": ["--network=br_dashboard"]
+}
+  

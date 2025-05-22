@@ -1,0 +1,14 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+	  {
+		"name": "Debug Taipei-City-Dashboard-BE",
+		"type": "go",
+		"request": "launch",
+		"mode": "auto",
+		"program": "${workspaceFolder}/Taipei-City-Dashboard-BE/main.go",
+		"dlvToolPath": "/go/bin/dlv"
+	  }
+	]
+  }
+  

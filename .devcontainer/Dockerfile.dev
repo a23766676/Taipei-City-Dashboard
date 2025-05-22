@@ -1,0 +1,11 @@
+# 使用 Go + Alpine 作為開發基底
+FROM golang:1.21.3-alpine3.18
+
+# 安裝開發常用工具（bash、curl、git）
+RUN apk add --no-cache bash git curl
+
+# 安裝 Delve 除錯工具
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+
+# 設定工作目錄（容器中的掛載點）
+WORKDIR /workspace

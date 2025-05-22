@@ -64,9 +64,9 @@ func ConnectToDatabase(dbConfig global.DatabaseConfig) *gorm.DB {
 		"host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		dbConfig.Host,
 		dbConfig.Port,
-		dbConfig.User,
+		"postgres",
 		dbConfig.DBName,
-		dbConfig.Password,
+		"1qaz@WSX+",
 	)
 
 	// Establish a connection to the database using gorm.Open and the constructed connection string
