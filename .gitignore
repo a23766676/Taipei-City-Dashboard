@@ -48,7 +48,6 @@ dist.tar.gz
 go.work
 
 # .env files except for template
-docker/.env
 Taipei-City-Dashboard-FE/.env
 Taipei-City-Dashboard-FE/.env.development
 Taipei-City-Dashboard-FE/.env.production
