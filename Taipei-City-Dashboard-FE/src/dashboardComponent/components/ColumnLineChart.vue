@@ -97,7 +97,7 @@ const chartOptions = ref({
 					w.globals.seriesNames[seriesIndex]
 				}` +
 				`</h6>` +
-				`<span>${series[seriesIndex][dataPointIndex]} ${props.chart_config.unit}</span>` +
+				`<span>${series[seriesIndex][dataPointIndex]} ${props.chart_config.unit.split(',').length>0?props.chart_config.unit.split(',')[seriesIndex]:props.chart_config.unit}</span>` +
 				`</div>`
 			);
 		},
