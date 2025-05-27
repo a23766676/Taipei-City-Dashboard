@@ -44,7 +44,7 @@ var (
 
 	// PostgresManager defines the configuration for the manager database
 	PostgresManager = DatabaseConfig{
-		Host:     getEnv("DB_MANAGER_HOST", "postgres-manager"),
+		Host:     getEnv("DB_MANAGER_HOST", "192.168.110.171"),
 		Port:     getEnv("DB_MANAGER_PORT", "5432"),
 		User:     getEnv("DB_MANAGER_USER", ""),
 		Password: getEnv("DB_MANAGER_PASSWORD", ""),
@@ -53,8 +53,8 @@ var (
 
 	// PostgresDashboard defines the configuration for the dashboard database
 	PostgresDashboard = DatabaseConfig{
-		Host:     getEnv("DB_DASHBOARD_HOST", "postgres-data"),
-		Port:     getEnv("DB_DASHBOARD_PORT", "5432"),
+		Host:     getEnv("DB_DASHBOARD_HOST", "192.168.110.171"),
+		Port:     getEnv("DB_DASHBOARD_PORT", "5431"),
 		User:     getEnv("DB_DASHBOARD_USER", ""),
 		Password: getEnv("DB_DASHBOARD_PASSWORD", ""),
 		DBName:   getEnv("DB_DASHBOARD_DBNAME", "dashboard"),
