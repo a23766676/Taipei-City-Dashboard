@@ -45,6 +45,10 @@ function toggleVillageLayer() {
 	mapStore.toggleVillageBoundaries(villageLayer.value);
 }
 
+function toggleZoom() {
+	mapStore.zoomInMap();
+}
+
 watch(
 	() => route.query?.city,
 	(newValue) => {
@@ -88,6 +92,16 @@ onMounted(() => {
           @click="toggleVillageLayer"
         >
           里
+        </button>
+        <button
+          :style="{
+            color: villageLayer
+              ? 'var(--color-highlight)'
+              : 'var(--color-component-background)',
+          }"
+          @click="toggleZoom"
+        >
+          縮放
         </button>
 
         <button
