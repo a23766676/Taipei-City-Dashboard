@@ -218,7 +218,7 @@ function handleDataSelection(_e, _chartContext, config) {
       <h6>{{ heatmapData.sum }} {{ chart_config.unit }}</h6>
     </div>
     <VueApexCharts
-      width="100%"
+      :width="props.chart_config.categories.length * 25 + 120 + 'px'"
       height="360px"
       type="heatmap"
       :options="chartOptions"
@@ -230,6 +230,8 @@ function handleDataSelection(_e, _chartContext, config) {
 
 <style scoped lang="scss">
 .heatmapchart {
+	overflow: auto;
+
 	&-title {
 		display: flex;
 		justify-content: center;
@@ -247,6 +249,10 @@ function handleDataSelection(_e, _chartContext, config) {
 			font-size: var(--font-m);
 			font-weight: 400;
 		}
+	}
+
+	.vue-apexcharts {
+		width: fit-content;
 	}
 }
 </style>
