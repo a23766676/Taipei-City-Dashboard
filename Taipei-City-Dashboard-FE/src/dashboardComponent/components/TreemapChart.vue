@@ -85,6 +85,7 @@ const chartOptions = ref({
 				series[seriesIndex][dataPointIndex] +
 				` ${props.chart_config.unit}` +
 				"</span>" +
+				`${w.globals.seriesZ[seriesIndex][dataPointIndex]?'<div>標準化差異:'+w.globals.seriesZ[seriesIndex][dataPointIndex]+'</div>':''}`+
 				"</div>"
 			);
 		},

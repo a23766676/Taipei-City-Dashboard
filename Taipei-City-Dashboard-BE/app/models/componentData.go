@@ -27,7 +27,7 @@ TwoDimensionalData Json Format:
 		"data": [
 			{
 				"data": [
-					{ "x": "", "y": 17 },
+					{ "x": "", "y": 17 ,"z":0 },
 					...
 				]
 			}
@@ -37,6 +37,7 @@ TwoDimensionalData Json Format:
 type TwoDimensionalData struct {
 	Xaxis string  `gorm:"column:x_axis" json:"x"`
 	Data  float64 `gorm:"column:data" json:"y"`
+	Zaxis string  `gorm:"column:z_axis" json:"z"`
 }
 type TwoDimensionalDataOutput struct {
 	Data []TwoDimensionalData `json:"data"`
