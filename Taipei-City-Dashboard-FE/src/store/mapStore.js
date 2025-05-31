@@ -185,6 +185,100 @@ export const useMapStore = defineStore("map", {
 
 			this.addSymbolSources();
 		},
+		zoomInMap(source) {
+			this.map.addLayer({
+				id: 'clusters',
+				type: 'circle',
+				source,
+				filter: ['has', 'point_count'],
+				paint: {
+					// Use step expressions (https://docs.mapbox.com/style-spec/reference/expressions/#step)
+					// with three steps to implement three types of circles:
+					//   * Blue, 20px circles when point count is less than 100
+					//   * Yellow, 30px circles when point count is between 100 and 750
+					//   * Pink, 40px circles when point count is greater than or equal to 750
+					'circle-color': [
+						'step',
+						['get', 'point_count'],
+						'#51bbd6',
+						100,
+						'#f1f075',
+						750,
+						'#f28cb1'
+					],
+					'circle-radius': [
+						'step',
+						['get', 'point_count'],
+						20,
+						100,
+						30,
+						750,
+						40
+					]
+				}
+			});
+			this.currentLayers.push('clusters');
+
+			this.map.addLayer({
+				id: 'cluster-count',
+				type: 'symbol',
+				source,
+				filter: ['has', 'point_count'],
+				layout: {
+					'text-field': ['get', 'point_count_abbreviated'],
+					'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+					'text-size': 12
+				}
+			});
+			this.currentLayers.push('cluster-count');
+
+			this.map.on('click', 'clusters', (e) => {
+				const features = this.map.queryRenderedFeatures(e.point, {
+					layers: ['clusters']
+				});
+				const clusterId = features[0].properties.cluster_id;
+				this.map.getSource(source).getClusterExpansionZoom(
+					clusterId,
+					(err, zoom) => {
+						if (err) return;
+
+						this.map.easeTo({
+							center: features[0].geometry.coordinates,
+							zoom: zoom
+						});
+					}
+				);
+			});
+			this.map.on('click', 'unclustered-point', (e) => {
+				const coordinates = e.features[0].geometry.coordinates.slice();
+				const {mag} = e.features[0].properties;
+				const tsunami =
+							e.features[0].properties.tsunami === 1 ? 'yes' : 'no';
+
+				// Ensure that if the map is zoomed out such that
+				// multiple copies of the feature are visible, the
+				// popup appears over the copy being pointed to.
+				if (['mercator', 'equirectangular'].includes(map.getProjection().name)) {
+					while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+						coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+					}
+				}
+
+				new mapboxgl.Popup()
+					.setLngLat(coordinates)
+					.setHTML(
+						`magnitude: ${mag}<br>Was there a tsunami?: ${tsunami}`
+					)
+					.addTo(this.map);
+			});
+
+			this.map.on('mouseenter', 'clusters', () => {
+				this.map.getCanvas().style.cursor = 'pointer';
+			});
+			this.map.on('mouseleave', 'clusters', () => {
+				this.map.getCanvas().style.cursor = '';
+			});
+		},
 		// 3. Adds symbols that will be used by some map layers
 		addSymbolSources() {
 			const images = [
@@ -310,10 +404,21 @@ export const useMapStore = defineStore("map", {
 		// 3-1. Add a local geojson as a source in mapbox
 		addGeojsonSource(map_config, data) {
 			if (!["voronoi", "isoline"].includes(map_config.type)) {
-				this.map.addSource(`${map_config.layerId}-source`, {
-					type: "geojson",
-					data: { ...data },
-				});
+				if (map_config.type === "symbol") {	
+					this.map.addSource(`${map_config.layerId}-source`, {
+						type: "geojson",
+						data: { ...data },
+						cluster: true,
+						clusterMaxZoom: 14,
+						clusterRadius: 50,
+					});		
+					this.zoomInMap(`${map_config.layerId}-source`);
+				} else {
+					this.map.addSource(`${map_config.layerId}-source`, {
+						type: "geojson",
+						data: { ...data },
+					});	
+				}
 			}
 			if (map_config.type === "arc") {
 				this.AddArcMapLayer(map_config, data);
@@ -804,6 +909,7 @@ export const useMapStore = defineStore("map", {
 				);
 			});
 			this.removePopup();
+			this.clearOnlyLayers();
 		},
 
 		/* Popup Related Functions */
