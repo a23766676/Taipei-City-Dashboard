@@ -18,8 +18,30 @@ const emits = defineEmits([
 	"filterByLayer",
 	"clearByParamFilter",
 	"clearByLayerFilter",
-	"fly"
+	"fly",
 ]);
+
+const getColorConfig = (colorConfig) => {
+	if (!Array.isArray(colorConfig)) return {};
+	
+	if (typeof colorConfig[0] === 'string') {
+		return { colors: colorConfig };
+	}
+	
+	if (typeof colorConfig[0] === 'object') {
+		return {
+			plotOptions: {
+				treemap: {
+					colorScale: {
+						ranges: colorConfig
+					}
+				}
+			}
+		};
+	}
+	
+	return {};
+};
 
 const chartOptions = ref({
 	chart: {
@@ -28,12 +50,9 @@ const chartOptions = ref({
 			show: false,
 		},
 	},
-	colors: [...props.chart_config.color],
+	...getColorConfig(props.chart_config.color),
 	dataLabels: {
-		formatter: function (
-			val,
-			{ dataPointIndex }
-		) {
+		formatter: function (val, { dataPointIndex }) {
 			return dataPointIndex > 5 ? "" : val;
 		},
 	},
@@ -55,12 +74,7 @@ const chartOptions = ref({
 		width: 2,
 	},
 	tooltip: {
-		custom: function ({
-			series,
-			seriesIndex,
-			dataPointIndex,
-			w,
-		}) {
+		custom: function ({ series, seriesIndex, dataPointIndex, w }) {
 			// The class "chart-tooltip" could be edited in /assets/styles/chartStyles.css
 			return (
 				'<div class="chart-tooltip">' +
@@ -71,6 +85,7 @@ const chartOptions = ref({
 				series[seriesIndex][dataPointIndex] +
 				` ${props.chart_config.unit}` +
 				"</span>" +
+				`${w.globals.seriesZ[seriesIndex][dataPointIndex]?'<div>標準化差異:'+w.globals.seriesZ[seriesIndex][dataPointIndex]+'</div>':''}`+
 				"</div>"
 			);
 		},
@@ -91,9 +106,7 @@ const chartOptions = ref({
 
 const sum = computed(() => {
 	let sum = 0;
-	props.series[0].data.forEach(
-		(item) => (sum += item.y)
-	);
+	props.series[0].data.forEach((item) => (sum += item.y));
 	return Math.round(sum * 100) / 100;
 });
 
